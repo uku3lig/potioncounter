@@ -43,7 +43,7 @@ public class MixinInGameHud {
 
         Stream<ItemStack> stream = client.player.getInventory().main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
         List<ItemStack> items = new ArrayList<>();
-        if (holder.getConfig().showUpgrades) {
+        if (holder.getConfig().isShowUpgrades()) {
             stream.collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()))
                     .entrySet().stream()
                     .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), e.getKey()))
