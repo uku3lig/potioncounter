@@ -1,14 +1,18 @@
 package net.uku3lig.potioncounter.mixin;
 
+import me.shedaniel.autoconfig.AutoConfig;
+import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.uku3lig.potioncounter.PotionCounterConfig;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -17,14 +21,17 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
     private static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
+    private final ConfigHolder<PotionCounterConfig> holder = AutoConfig.getConfigHolder(PotionCounterConfig.class);
+
     @Shadow @Final private MinecraftClient client;
 
     @Shadow @Final private ItemRenderer itemRenderer;
@@ -34,10 +41,23 @@ public class MixinInGameHud {
         if (client.player == null) return;
         TextRenderer textRenderer = client.textRenderer;
 
-        Map<Potion, Long> counts = client.player.getInventory().main.stream()
-                .filter(i -> i.isItemEqual(SPLASH_POT))
-                .collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()));
-        List<ItemStack> items = counts.keySet().stream().map(p -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, counts.get(p).intValue()), p)).toList();
+        Stream<ItemStack> stream = client.player.getInventory().main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
+        List<ItemStack> items = new ArrayList<>();
+        if (holder.getConfig().showUpgrades) {
+            stream.collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()))
+                    .entrySet().stream()
+                    .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), e.getKey()))
+                    .forEach(items::add);
+        } else {
+            stream.filter(i -> !PotionUtil.getPotionEffects(i).isEmpty())
+                    .map(PotionUtil::getPotionEffects)
+                    .map(l -> l.get(0))
+                    .map(StatusEffectInstance::getEffectType)
+                    .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
+                    .entrySet().stream()
+                    .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), new Potion(new StatusEffectInstance(e.getKey()))))
+                    .forEach(items::add);
+        }
 
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
