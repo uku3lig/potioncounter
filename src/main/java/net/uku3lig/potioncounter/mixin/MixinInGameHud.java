@@ -1,7 +1,5 @@
 package net.uku3lig.potioncounter.mixin;
 
-import me.shedaniel.autoconfig.AutoConfig;
-import me.shedaniel.autoconfig.ConfigHolder;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
@@ -12,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
-import net.uku3lig.potioncounter.PotionCounterConfig;
+import net.uku3lig.potioncounter.config.ConfigScreen;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -30,7 +28,6 @@ import java.util.stream.Stream;
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
     private static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
-    private final ConfigHolder<PotionCounterConfig> holder = AutoConfig.getConfigHolder(PotionCounterConfig.class);
 
     @Shadow @Final private MinecraftClient client;
 
@@ -38,13 +35,13 @@ public class MixinInGameHud {
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
     private void afterRenderOverlay(MatrixStack matrices, CallbackInfo ci) {
-        if (!holder.getConfig().isEnabled()) return;
+        if (!ConfigScreen.enabled.getValue()) return;
         if (client.player == null) return;
         TextRenderer textRenderer = client.textRenderer;
 
         Stream<ItemStack> stream = client.player.getInventory().main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
         List<ItemStack> items = new ArrayList<>();
-        if (holder.getConfig().isShowUpgrades()) {
+        if (ConfigScreen.showUpgrades.getValue()) {
             stream.collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()))
                     .entrySet().stream()
                     .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), e.getKey()))
