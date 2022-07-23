@@ -8,5 +8,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "potioncounter")
 @Getter @Setter
 public class PotionCounterConfig implements ConfigData {
+    private boolean enabled = true;
     private boolean showUpgrades = false;
 }

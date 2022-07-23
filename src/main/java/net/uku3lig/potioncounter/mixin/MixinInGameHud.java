@@ -38,6 +38,7 @@ public class MixinInGameHud {
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
     private void afterRenderOverlay(MatrixStack matrices, CallbackInfo ci) {
+        if (!holder.getConfig().isEnabled()) return;
         if (client.player == null) return;
         TextRenderer textRenderer = client.textRenderer;
 
