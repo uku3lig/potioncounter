@@ -14,6 +14,9 @@
   "entrypoints": {
     "main": [
       "net.uku3lig.potioncounter.PotionCounter"
+    ],
+    "modmenu": [
+      "net.uku3lig.potioncounter.ModMenuHook"
     ]
   },
   "mixins": [
