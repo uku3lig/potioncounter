@@ -5,11 +5,14 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
+import net.minecraft.potion.Potions;
+import net.minecraft.util.registry.Registry;
 import net.uku3lig.potioncounter.PotionCounter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,7 +33,6 @@ public class MixinInGameHud {
     private static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
 
     @Shadow @Final private MinecraftClient client;
-
     @Shadow @Final private ItemRenderer itemRenderer;
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
@@ -53,7 +55,13 @@ public class MixinInGameHud {
                     .map(StatusEffectInstance::getEffectType)
                     .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
                     .entrySet().stream()
-                    .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), new Potion(new StatusEffectInstance(e.getKey()))))
+                    .map(e -> {
+                        Potion potion = Registry.POTION.stream()
+                                .filter(p -> p.getEffects().stream().anyMatch(s -> effectEquals(s.getEffectType(), e.getKey())))
+                                .findFirst().orElse(null);
+                        return PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), potion);
+                    })
+                    .filter(i -> !PotionUtil.getPotion(i).equals(Potions.EMPTY))
                     .forEach(items::add);
         }
 
@@ -76,5 +84,9 @@ public class MixinInGameHud {
             itemRenderer.renderGuiItemIcon(item, 5, 5 + 16*i);
             textRenderer.draw(matrices, String.valueOf(item.getCount()), 5 + 16 + 2f + textOffset, 5 + 16*i + textRenderer.fontHeight / 2f, Color.WHITE.getRGB());
         }
+    }
+
+    private boolean effectEquals(StatusEffect first, StatusEffect other) {
+        return first.getTranslationKey().equalsIgnoreCase(other.getTranslationKey()) && first.getColor() == other.getColor();
     }
 }
