@@ -14,6 +14,7 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.registry.Registry;
 import net.uku3lig.potioncounter.PotionCounter;
+import net.uku3lig.potioncounter.config.Config;
 import net.uku3lig.potioncounter.config.Position;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -35,6 +36,7 @@ public class MixinInGameHud {
 
     @Shadow @Final private MinecraftClient client;
     @Shadow @Final private ItemRenderer itemRenderer;
+    private final Config config = PotionCounter.getConfig();
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
     private void afterRenderOverlay(MatrixStack matrices, CallbackInfo ci) {
@@ -44,9 +46,10 @@ public class MixinInGameHud {
 
         Stream<ItemStack> stream = client.player.getInventory().main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
         List<ItemStack> items = new ArrayList<>();
-        if (PotionCounter.getConfig().isShowUpgrades()) {
+        if (config.isShowUpgrades()) {
             stream.collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()))
                     .entrySet().stream()
+                    .filter(e -> e.getKey().getEffects().stream().noneMatch(s -> config.getDisabledPotions().contains(s.getEffectType().getTranslationKey())))
                     .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), e.getKey()))
                     .forEach(items::add);
         } else {
@@ -56,6 +59,7 @@ public class MixinInGameHud {
                     .map(StatusEffectInstance::getEffectType)
                     .collect(Collectors.groupingBy(e -> e, Collectors.counting()))
                     .entrySet().stream()
+                    .filter(e -> !config.getDisabledPotions().contains(e.getKey().getTranslationKey()))
                     .map(e -> {
                         Potion potion = Registry.POTION.stream()
                                 .filter(p -> p.getEffects().stream().anyMatch(s -> effectEquals(s.getEffectType(), e.getKey())))
@@ -66,7 +70,7 @@ public class MixinInGameHud {
                     .forEach(items::add);
         }
 
-        Position position = PotionCounter.getConfig().getPosition();
+        Position position = config.getPosition();
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             String baseName = Optional.ofNullable(item.getNbt()).map(nbt -> nbt.getString(PotionUtil.POTION_KEY)).orElse(null);

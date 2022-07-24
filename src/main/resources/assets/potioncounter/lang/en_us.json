@@ -5,5 +5,6 @@
   "potioncounter.position.topLeft": "Top Left",
   "potioncounter.position.topRight": "Top Right",
   "potioncounter.position.bottomLeft": "Bottom Left",
-  "potioncounter.position.bottomRight": "Bottom Right"
+  "potioncounter.position.bottomRight": "Bottom Right",
+  "potioncounter.togglePotions": "Toggle individual potions"
 }

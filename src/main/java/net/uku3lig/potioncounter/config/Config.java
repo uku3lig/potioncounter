@@ -9,6 +9,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,9 +20,10 @@ public class Config {
     private boolean enabled;
     private boolean showUpgrades;
     private Position position;
+    private List<String> disabledPotions;
 
     public Config() {
-        this(true, false, Position.TOP_LEFT);
+        this(true, false, Position.TOP_LEFT, new ArrayList<>());
     }
 
     public static Config readConfig(File file) {

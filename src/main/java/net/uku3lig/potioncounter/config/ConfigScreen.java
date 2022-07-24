@@ -23,4 +23,11 @@ public class ConfigScreen extends AbstractConfigScreen {
                 new SimpleOption<>("potioncounter.position", SimpleOption.emptyTooltip(), SimpleOption.enumValueText(), new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(Position.values()), Codec.STRING.xmap(Position::valueOf, Position::name)), config.getPosition(), config::setPosition)
         };
     }
+
+    @Override
+    protected void drawFooterButtons() {
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 27, 150, 20, ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height - 27, 150, 20,
+                Text.translatable("potioncounter.togglePotions"), button -> this.client.setScreen(new PotionSelectionScreen(this))));
+    }
 }
