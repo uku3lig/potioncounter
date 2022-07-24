@@ -20,10 +20,11 @@ public class Config {
     private boolean enabled;
     private boolean showUpgrades;
     private Position position;
+    private boolean morePotions;
     private List<String> disabledPotions;
 
     public Config() {
-        this(true, false, Position.TOP_LEFT, new ArrayList<>());
+        this(true, false, Position.TOP_LEFT, false, new ArrayList<>());
     }
 
     public static Config readConfig(File file) {

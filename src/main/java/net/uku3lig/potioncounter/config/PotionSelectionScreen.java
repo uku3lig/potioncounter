@@ -16,18 +16,28 @@ public class PotionSelectionScreen extends AbstractConfigScreen {
 
     @Override
     protected SimpleOption<?>[] getOptions() {
-        return Registry.POTION.stream()
-                .flatMap(p -> p.getEffects().stream())
-                .map(StatusEffectInstance::getEffectType)
-                .map(StatusEffect::getRawId)
-                .distinct()
-                .map(StatusEffect::byRawId)
-                .filter(Objects::nonNull)
-                .map(StatusEffect::getTranslationKey)
-                .map(key -> SimpleOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
-                    if (value) config.getDisabledPotions().remove(key);
-                    else config.getDisabledPotions().add(key);
-                }))
-                .toArray(SimpleOption[]::new);
+        if (config.isMorePotions()) {
+            return Registry.STATUS_EFFECT.stream()
+                    .map(StatusEffect::getTranslationKey)
+                    .map(key -> SimpleOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
+                        if (value) config.getDisabledPotions().remove(key);
+                        else config.getDisabledPotions().add(key);
+                    }))
+                    .toArray(SimpleOption[]::new);
+        } else {
+            return Registry.POTION.stream()
+                    .flatMap(p -> p.getEffects().stream())
+                    .map(StatusEffectInstance::getEffectType)
+                    .map(StatusEffect::getRawId)
+                    .distinct()
+                    .map(StatusEffect::byRawId)
+                    .filter(Objects::nonNull)
+                    .map(StatusEffect::getTranslationKey)
+                    .map(key -> SimpleOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
+                        if (value) config.getDisabledPotions().remove(key);
+                        else config.getDisabledPotions().add(key);
+                    }))
+                    .toArray(SimpleOption[]::new);
+        }
     }
 }

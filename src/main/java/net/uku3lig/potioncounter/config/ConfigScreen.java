@@ -20,7 +20,8 @@ public class ConfigScreen extends AbstractConfigScreen {
         return new SimpleOption<?>[]{
                 SimpleOption.ofBoolean("potioncounter.enabled", config.isEnabled(), config::setEnabled),
                 SimpleOption.ofBoolean("potioncounter.showUpgrades", config.isShowUpgrades(), config::setShowUpgrades),
-                new SimpleOption<>("potioncounter.position", SimpleOption.emptyTooltip(), SimpleOption.enumValueText(), new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(Position.values()), Codec.STRING.xmap(Position::valueOf, Position::name)), config.getPosition(), config::setPosition)
+                new SimpleOption<>("potioncounter.position", SimpleOption.emptyTooltip(), SimpleOption.enumValueText(), new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(Position.values()), Codec.STRING.xmap(Position::valueOf, Position::name)), config.getPosition(), config::setPosition),
+                SimpleOption.ofBoolean("potioncounter.morePotions", config.isMorePotions(), config::setMorePotions)
         };
     }
 
