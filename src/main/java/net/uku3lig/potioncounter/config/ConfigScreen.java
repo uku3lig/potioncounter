@@ -55,13 +55,6 @@ public class ConfigScreen extends SimpleOptionsScreen {
         new TomlWriter().write(opt, configFile);
     }
 
-    private static class Options {
-        public final boolean enabled;
-        public final boolean showUpgrades;
-
-        private Options(boolean enabled, boolean showUpgrades) {
-            this.enabled = enabled;
-            this.showUpgrades = showUpgrades;
-        }
+    private record Options(boolean enabled, boolean showUpgrades) {
     }
 }
