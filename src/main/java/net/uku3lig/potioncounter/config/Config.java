@@ -2,27 +2,29 @@ package net.uku3lig.potioncounter.config;
 
 import com.moandjiezana.toml.Toml;
 import com.moandjiezana.toml.TomlWriter;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
+@AllArgsConstructor
 public class Config {
     private static final Logger logger = LogManager.getLogger("PotCounterConfig");
 
     private boolean enabled;
     private boolean showUpgrades;
-
-    public Config(boolean enabled, boolean showUpgrades) {
-        this.enabled = enabled;
-        this.showUpgrades = showUpgrades;
-    }
+    private Position position;
+    private boolean morePotions;
+    private List<String> disabledPotions;
 
     public Config() {
-        this(true, false);
+        this(true, false, Position.TOP_LEFT, false, new ArrayList<>());
     }
 
     public static Config readConfig(File file) {
@@ -34,8 +36,7 @@ public class Config {
             }
             return new Config();
         } else {
-            Toml toml = new Toml().read(file);
-            return new Config(toml.getBoolean("enabled"), toml.getBoolean("showUpgrades"));
+            return new Toml().read(file).to(Config.class);
         }
     }
 

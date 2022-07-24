@@ -1,4 +1,10 @@
 {
   "potioncounter.enabled": "Enabled",
-  "potioncounter.showUpgrades": "Show potion upgrades"
+  "potioncounter.showUpgrades": "Show potion upgrades",
+  "potioncounter.position": "Position",
+  "potioncounter.position.topLeft": "Top Left",
+  "potioncounter.position.topRight": "Top Right",
+  "potioncounter.position.bottomLeft": "Bottom Left",
+  "potioncounter.position.bottomRight": "Bottom Right",
+  "potioncounter.togglePotions": "Toggle individual potions"
 }
