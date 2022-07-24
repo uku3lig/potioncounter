@@ -1,60 +1,62 @@
 package net.uku3lig.potioncounter.config;
 
-import com.moandjiezana.toml.Toml;
-import com.moandjiezana.toml.TomlWriter;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.option.SimpleOptionsScreen;
-import net.minecraft.client.option.SimpleOption;
+import net.minecraft.client.gui.screen.ScreenTexts;
+import net.minecraft.client.gui.screen.option.GameOptionsScreen;
+import net.minecraft.client.gui.widget.ButtonListWidget;
+import net.minecraft.client.gui.widget.ButtonWidget;
+import net.minecraft.client.option.CyclingOption;
+import net.minecraft.client.option.Option;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
+import net.uku3lig.potioncounter.PotionCounter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
-public class ConfigScreen extends SimpleOptionsScreen {
-    private static final Logger logger = LogManager.getLogger("PotCounterConfig");
-
-    public static final File configFile = new File("./config/potioncounter.toml");
-
-    public static final SimpleOption<Boolean> enabled = SimpleOption.ofBoolean("potioncounter.enabled", true);
-    public static final SimpleOption<Boolean> showUpgrades = SimpleOption.ofBoolean("potioncounter.showUpgrades", false);
+public class ConfigScreen extends GameOptionsScreen {
+    private static final Logger logger = LogManager.getLogger("PotCounterConfigScreen");
+    private final Config config;
+    private ButtonListWidget buttonList;
 
     public ConfigScreen(Screen parent) {
-        super(parent, MinecraftClient.getInstance().options, Text.of("PotionCounter Config"), new SimpleOption[] {enabled, showUpgrades});
+        super(parent, MinecraftClient.getInstance().options, Text.of("PotionCounter Config"));
+        this.config = PotionCounter.getConfig();
     }
 
     @Override
     protected void init() {
         super.init();
-        if (!configFile.exists()) {
-            try {
-                writeConfig();
-            } catch (IOException e) {
-                logger.warn("Could not write default configuration file", e);
-            }
-        } else {
-            Toml toml = new Toml().read(configFile);
-            enabled.setValue(toml.getBoolean("enabled"));
-            showUpgrades.setValue(toml.getBoolean("showUpgrades"));
-        }
+        buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
+        buttonList.addAll(new Option[]{
+                CyclingOption.create("potioncounter.enabled", opt -> config.isEnabled(), (opt, option, value) -> config.setEnabled(value)),
+                CyclingOption.create("potioncounter.showUpgrades", opt -> config.isShowUpgrades(), (opt, option, value) -> config.setShowUpgrades(value))
+        });
+        this.addSelectableChild(buttonList);
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
+    }
+
+    @Override
+    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+        this.renderBackground(matrices);
+        this.buttonList.render(matrices, mouseX, mouseY, delta);
+        DrawableHelper.drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 0xFFFFFF);
+        super.render(matrices, mouseX, mouseY, delta);
+        List<OrderedText> list = GameOptionsScreen.getHoveredButtonTooltip(this.buttonList, mouseX, mouseY);
+        this.renderOrderedTooltip(matrices, list, mouseX, mouseY);
     }
 
     @Override
     public void removed() {
         try {
-            writeConfig();
+            config.writeConfig(PotionCounter.configFile);
         } catch (IOException e) {
             logger.warn("Could not save configuration file", e);
         }
-    }
-
-    private void writeConfig() throws IOException {
-        Options opt = new Options(enabled.getValue(), showUpgrades.getValue());
-        new TomlWriter().write(opt, configFile);
-    }
-
-    private record Options(boolean enabled, boolean showUpgrades) {
     }
 }

@@ -10,7 +10,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
-import net.uku3lig.potioncounter.config.ConfigScreen;
+import net.uku3lig.potioncounter.PotionCounter;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -35,13 +35,13 @@ public class MixinInGameHud {
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
     private void afterRenderOverlay(MatrixStack matrices, CallbackInfo ci) {
-        if (!ConfigScreen.enabled.getValue()) return;
+        if (!PotionCounter.getConfig().isEnabled()) return;
         if (client.player == null) return;
         TextRenderer textRenderer = client.textRenderer;
 
         Stream<ItemStack> stream = client.player.getInventory().main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
         List<ItemStack> items = new ArrayList<>();
-        if (ConfigScreen.showUpgrades.getValue()) {
+        if (PotionCounter.getConfig().isShowUpgrades()) {
             stream.collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()))
                     .entrySet().stream()
                     .map(e -> PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), e.getKey()))
