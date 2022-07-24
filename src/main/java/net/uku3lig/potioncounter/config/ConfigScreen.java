@@ -1,5 +1,6 @@
 package net.uku3lig.potioncounter.config;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.gui.screen.Screen;
@@ -16,6 +17,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 public class ConfigScreen extends GameOptionsScreen {
@@ -34,7 +36,8 @@ public class ConfigScreen extends GameOptionsScreen {
         buttonList = new ButtonListWidget(this.client, this.width, this.height, 32, this.height - 32, 25);
         buttonList.addAll(new SimpleOption[]{
                 SimpleOption.ofBoolean("potioncounter.enabled", config.isEnabled(), config::setEnabled),
-                SimpleOption.ofBoolean("potioncounter.showUpgrades", config.isShowUpgrades(), config::setShowUpgrades)
+                SimpleOption.ofBoolean("potioncounter.showUpgrades", config.isShowUpgrades(), config::setShowUpgrades),
+                new SimpleOption<>("potioncounter.position", SimpleOption.emptyTooltip(), SimpleOption.enumValueText(), new SimpleOption.PotentialValuesBasedCallbacks<>(Arrays.asList(Position.values()), Codec.STRING.xmap(Position::valueOf, Position::name)), config.getPosition(), config::setPosition)
         });
         this.addSelectableChild(buttonList);
         this.addDrawableChild(new ButtonWidget(this.width / 2 - 100, this.height - 27, 200, 20, ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));

@@ -14,6 +14,7 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.registry.Registry;
 import net.uku3lig.potioncounter.PotionCounter;
+import net.uku3lig.potioncounter.config.Position;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -65,25 +66,36 @@ public class MixinInGameHud {
                     .forEach(items::add);
         }
 
+        Position position = PotionCounter.getConfig().getPosition();
         for (int i = 0; i < items.size(); i++) {
             ItemStack item = items.get(i);
             String baseName = Optional.ofNullable(item.getNbt()).map(nbt -> nbt.getString(PotionUtil.POTION_KEY)).orElse(null);
 
             int textOffset = 0;
+            int x = position.isRight() ? this.client.getWindow().getScaledWidth() - 5 : 5;
+            int y = (position.isBottom() ? this.client.getWindow().getScaledHeight() - 5 : 5) + 18 * i * (position.isBottom() ? -1 : 1);
+
             if (baseName != null) {
                 if (baseName.contains("long")) {
                     textOffset += 16;
-                    itemRenderer.renderGuiItemIcon(new ItemStack(Items.REDSTONE), 5 + textOffset, 5 + 16*i);
+                    itemRenderer.renderGuiItemIcon(new ItemStack(Items.REDSTONE), position.isRight() ? x - 16 - textOffset : x + textOffset, position.isBottom() ? y - 16 : y);
                 }
                 if (baseName.contains("strong")) {
                     textOffset += 16;
-                    itemRenderer.renderGuiItemIcon(new ItemStack(Items.GLOWSTONE_DUST), 5 + textOffset, 5 + 16*i);
+                    itemRenderer.renderGuiItemIcon(new ItemStack(Items.GLOWSTONE_DUST), position.isRight() ? x - 16 - textOffset : x + textOffset, position.isBottom() ? y - 16 : y);
                 }
             }
 
-            itemRenderer.renderGuiItemIcon(item, 5, 5 + 16*i);
-            textRenderer.draw(matrices, String.valueOf(item.getCount()), 5 + 16 + 2f + textOffset, 5 + 16*i + textRenderer.fontHeight / 2f, Color.WHITE.getRGB());
+            renderItem(matrices, textRenderer, item, x, y, textOffset, position);
         }
+    }
+
+    private void renderItem(MatrixStack matrices, TextRenderer textRenderer, ItemStack item, int x, int y, int textOffset, Position position) {
+        String text = String.valueOf(item.getCount());
+        int textWidth = textRenderer.getWidth(text);
+
+        itemRenderer.renderGuiItemIcon(item, position.isRight() ? x - 16 : x, position.isBottom() ? y - 16 : y);
+        textRenderer.draw(matrices, text, position.isRight() ? x - 18 - textWidth - textOffset : x + 18 + textOffset, (position.isBottom() ? y - 16 : y) + textRenderer.fontHeight / 2f, Color.WHITE.getRGB());
     }
 
     private boolean effectEquals(StatusEffect first, StatusEffect other) {
