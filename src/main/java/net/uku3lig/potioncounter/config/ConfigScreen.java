@@ -27,8 +27,8 @@ public class ConfigScreen extends AbstractConfigScreen {
 
     @Override
     protected void drawFooterButtons() {
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 27, 150, 20, ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
-        this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height - 27, 150, 20,
+        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 27, 150, 20,
                 Text.translatable("potioncounter.togglePotions"), button -> this.client.setScreen(new PotionSelectionScreen(this))));
+        this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height - 27, 150, 20, ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
     }
 }
