@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Mixin(InGameHud.class)
+@Mixin(value = InGameHud.class, priority = 999)
 public class MixinInGameHud {
     private static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
 
@@ -38,7 +38,7 @@ public class MixinInGameHud {
     @Shadow @Final private ItemRenderer itemRenderer;
     private final Config config = PotionCounter.getConfig();
 
-    @Inject(method = "renderStatusEffectOverlay", at = @At("RETURN"))
+    @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"))
     private void afterRenderOverlay(MatrixStack matrices, CallbackInfo ci) {
         if (!PotionCounter.getConfig().isEnabled()) return;
         if (client.player == null) return;
