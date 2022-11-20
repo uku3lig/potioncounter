@@ -1,17 +1,13 @@
 package net.uku3lig.potioncounter;
 
 import lombok.Getter;
-import net.fabricmc.api.ModInitializer;
-import net.uku3lig.potioncounter.config.Config;
+import net.uku3lig.potioncounter.config.PotionCounterConfig;
+import net.uku3lig.ukulib.config.ConfigManager;
 
-import java.io.File;
-
-public class PotionCounter implements ModInitializer {
-    public static final File configFile = new File("./config/potioncounter.toml");
+public class PotionCounter {
     @Getter
-    private static final Config config = Config.readConfig(configFile);
-    @Override
-    public void onInitialize() {
-        // just to initialize the fields you know
+    private static final ConfigManager<PotionCounterConfig> manager = ConfigManager.create(PotionCounterConfig.class, "potioncounter");
+
+    private PotionCounter() {
     }
 }
