@@ -6,16 +6,18 @@ import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
+import net.uku3lig.ukulib.config.ConfigManager;
+import net.uku3lig.ukulib.config.screen.AbstractConfigScreen;
 
 import java.util.Objects;
 
-public class PotionSelectionScreen extends AbstractConfigScreen {
-    public PotionSelectionScreen(Screen parent) {
-        super(parent, Text.translatable("potioncounter.togglePotions"));
+public class PotionSelectionScreen extends AbstractConfigScreen<PotionCounterConfig> {
+    public PotionSelectionScreen(Screen parent, ConfigManager<PotionCounterConfig> manager) {
+        super(parent, Text.translatable("potioncounter.togglePotions"), manager);
     }
 
     @Override
-    protected SimpleOption<?>[] getOptions() {
+    protected SimpleOption<?>[] getOptions(PotionCounterConfig config) {
         if (config.isMorePotions()) {
             return Registry.STATUS_EFFECT.stream()
                     .map(StatusEffect::getTranslationKey)

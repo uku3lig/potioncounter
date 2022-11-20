@@ -12,11 +12,8 @@
   "icon": "assets/potioncounter/icon.png",
   "environment": "client",
   "entrypoints": {
-    "main": [
-      "net.uku3lig.potioncounter.PotionCounter"
-    ],
-    "modmenu": [
-      "net.uku3lig.potioncounter.ModMenuHook"
+    "ukulib": [
+      "net.uku3lig.potioncounter.UkulibHook"
     ]
   },
   "mixins": [

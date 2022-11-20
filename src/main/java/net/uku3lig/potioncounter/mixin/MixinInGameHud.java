@@ -14,8 +14,8 @@ import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
 import net.minecraft.util.registry.Registry;
 import net.uku3lig.potioncounter.PotionCounter;
-import net.uku3lig.potioncounter.config.Config;
-import net.uku3lig.potioncounter.config.Position;
+import net.uku3lig.potioncounter.config.PotionCounterConfig;
+import net.uku3lig.ukulib.config.Position;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -36,12 +36,12 @@ public class MixinInGameHud {
 
     @Shadow @Final private MinecraftClient client;
     @Shadow @Final private ItemRenderer itemRenderer;
-    private final Config config = PotionCounter.getConfig();
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"))
     private void afterRenderOverlay(MatrixStack matrices, CallbackInfo ci) {
-        if (!PotionCounter.getConfig().isEnabled()) return;
+        if (!PotionCounter.getManager().getConfig().isEnabled()) return;
         if (client.player == null) return;
+        PotionCounterConfig config = PotionCounter.getManager().getConfig();
         TextRenderer textRenderer = client.textRenderer;
 
         Stream<ItemStack> stream = client.player.getInventory().main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
