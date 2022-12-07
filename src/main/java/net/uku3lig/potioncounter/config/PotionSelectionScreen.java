@@ -4,8 +4,8 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
 import net.uku3lig.ukulib.config.ConfigManager;
 import net.uku3lig.ukulib.config.screen.AbstractConfigScreen;
 
@@ -19,7 +19,7 @@ public class PotionSelectionScreen extends AbstractConfigScreen<PotionCounterCon
     @Override
     protected SimpleOption<?>[] getOptions(PotionCounterConfig config) {
         if (config.isMorePotions()) {
-            return Registry.STATUS_EFFECT.stream()
+            return Registries.STATUS_EFFECT.stream()
                     .map(StatusEffect::getTranslationKey)
                     .map(key -> SimpleOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
                         if (value) config.getDisabledPotions().remove(key);
@@ -27,7 +27,7 @@ public class PotionSelectionScreen extends AbstractConfigScreen<PotionCounterCon
                     }))
                     .toArray(SimpleOption[]::new);
         } else {
-            return Registry.POTION.stream()
+            return Registries.POTION.stream()
                     .flatMap(p -> p.getEffects().stream())
                     .map(StatusEffectInstance::getEffectType)
                     .map(StatusEffect::getRawId)

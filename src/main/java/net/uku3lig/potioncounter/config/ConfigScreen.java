@@ -3,11 +3,11 @@ package net.uku3lig.potioncounter.config;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.SimpleOption;
-import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.uku3lig.ukulib.config.ConfigManager;
 import net.uku3lig.ukulib.config.Position;
 import net.uku3lig.ukulib.config.screen.AbstractConfigScreen;
+import net.uku3lig.ukulib.utils.Ukutils;
 
 import java.util.EnumSet;
 
@@ -30,8 +30,10 @@ public class ConfigScreen extends AbstractConfigScreen<PotionCounterConfig> {
     @Override
     @SuppressWarnings("ConstantConditions")
     protected void drawFooterButtons() {
-        this.addDrawableChild(new ButtonWidget(this.width / 2 - 155, this.height - 27, 150, 20,
-                Text.translatable("potioncounter.togglePotions"), button -> this.client.setScreen(new PotionSelectionScreen(this, manager))));
-        this.addDrawableChild(new ButtonWidget(this.width / 2 + 5, this.height - 27, 150, 20, ScreenTexts.DONE, button -> this.client.setScreen(this.parent)));
+        this.addDrawableChild(ButtonWidget.builder(Text.translatable("potioncounter.togglePotions"),
+                        button -> this.client.setScreen(new PotionSelectionScreen(this, manager)))
+                .dimensions(this.width / 2 - 155, this.height - 27, 150, 20)
+                .build());
+        Ukutils.doneButton(this.width, this.height, parent);
     }
 }
