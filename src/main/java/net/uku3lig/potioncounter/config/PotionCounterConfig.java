@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import net.uku3lig.ukulib.config.IConfig;
-import net.uku3lig.ukulib.config.Position;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,12 +16,13 @@ import java.util.List;
 public class PotionCounterConfig implements IConfig<PotionCounterConfig> {
     private boolean enabled;
     private boolean showUpgrades;
-    private Position position;
+    private int x;
+    private int y;
     private boolean morePotions;
     private List<String> disabledPotions;
 
     @Override
     public PotionCounterConfig defaultConfig() {
-        return new PotionCounterConfig(true, false, Position.TOP_LEFT, false, new ArrayList<>());
+        return new PotionCounterConfig(true, false, -1, -1, false, new ArrayList<>());
     }
 }
