@@ -12,7 +12,7 @@ import net.minecraft.item.Items;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
-import net.minecraft.registry.Registries;
+import net.minecraft.util.registry.Registry;
 import net.uku3lig.potioncounter.config.PotionCounterConfig;
 import net.uku3lig.ukulib.config.ConfigManager;
 
@@ -44,7 +44,7 @@ public class PotionCounter {
                     .entrySet().stream()
                     .filter(e -> !manager.getConfig().getDisabledPotions().contains(e.getKey().getTranslationKey()))
                     .map(e -> {
-                        Potion potion = Registries.POTION.stream()
+                        Potion potion = Registry.POTION.stream()
                                 .filter(p -> p.getEffects().stream().anyMatch(s -> effectEquals(s.getEffectType(), e.getKey())))
                                 .findFirst().orElse(null);
                         return PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, e.getValue().intValue()), potion);
