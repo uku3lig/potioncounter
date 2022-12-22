@@ -1,15 +1,11 @@
 package net.uku3lig.potioncounter.config;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
 import net.uku3lig.ukulib.config.ConfigManager;
-import net.uku3lig.ukulib.config.Position;
 import net.uku3lig.ukulib.config.screen.AbstractConfigScreen;
 import net.uku3lig.ukulib.utils.Ukutils;
-
-import java.util.EnumSet;
 
 public class ConfigScreen extends AbstractConfigScreen<PotionCounterConfig> {
 
@@ -22,18 +18,9 @@ public class ConfigScreen extends AbstractConfigScreen<PotionCounterConfig> {
         return new SimpleOption<?>[]{
                 SimpleOption.ofBoolean("potioncounter.enabled", config.isEnabled(), config::setEnabled),
                 SimpleOption.ofBoolean("potioncounter.showUpgrades", config.isShowUpgrades(), config::setShowUpgrades),
-                Position.getOption(EnumSet.complementOf(EnumSet.of(Position.MIDDLE)), config::getPosition, config::setPosition),
-                SimpleOption.ofBoolean("potioncounter.morePotions", config.isMorePotions(), config::setMorePotions)
+                Ukutils.createOpenButton("ukulib.position", parent -> new PotionPositionSelectScreen(parent, config)),
+                SimpleOption.ofBoolean("potioncounter.morePotions", config.isMorePotions(), config::setMorePotions),
+                Ukutils.createOpenButton("potioncounter.togglePotions", parent -> new PotionSelectionScreen(parent, manager))
         };
-    }
-
-    @Override
-    @SuppressWarnings("ConstantConditions")
-    protected void drawFooterButtons() {
-        this.addDrawableChild(ButtonWidget.builder(Text.translatable("potioncounter.togglePotions"),
-                        button -> this.client.setScreen(new PotionSelectionScreen(this, manager)))
-                .dimensions(this.width / 2 - 155, this.height - 27, 150, 20)
-                .build());
-        Ukutils.doneButton(this.width, this.height, parent);
     }
 }
