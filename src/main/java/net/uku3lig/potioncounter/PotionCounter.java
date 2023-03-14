@@ -79,18 +79,18 @@ public class PotionCounter {
             if (baseName != null && manager.getConfig().isShowUpgrades()) {
                 if (baseName.contains("long")) {
                     textOffset += 16;
-                    itemRenderer.renderGuiItemIcon(new ItemStack(Items.REDSTONE), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
+                    itemRenderer.renderGuiItemIcon(matrices, new ItemStack(Items.REDSTONE), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
                 }
                 if (baseName.contains("strong")) {
                     textOffset += 16;
-                    itemRenderer.renderGuiItemIcon(new ItemStack(Items.GLOWSTONE_DUST), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
+                    itemRenderer.renderGuiItemIcon(matrices, new ItemStack(Items.GLOWSTONE_DUST), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
                 }
             }
 
             String text = String.valueOf(item.getCount());
             int textWidth = textRenderer.getWidth(text);
 
-            itemRenderer.renderGuiItemIcon(item, isBottom ? x - 16 : x, isRight ? ly - 16 : ly);
+            itemRenderer.renderGuiItemIcon(matrices, item, isBottom ? x - 16 : x, isRight ? ly - 16 : ly);
             textRenderer.draw(matrices, text, isBottom ? x - 18 - textWidth - textOffset : x + 18 + textOffset, (isRight ? ly - 16 : ly) + textRenderer.fontHeight / 2f, Color.WHITE.getRGB());
         }
     }

@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.PotionUtil;
 import net.minecraft.potion.Potions;
+import net.minecraft.text.Text;
 import net.uku3lig.potioncounter.PotionCounter;
 import net.uku3lig.ukulib.config.screen.PositionSelectScreen;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class PotionPositionSelectScreen extends PositionSelectScreen {
     protected PotionPositionSelectScreen(Screen parent, PotionCounterConfig config) {
-        super(parent, config.getX(), config.getY(), PotionCounter.getManager(), (x, y) -> {
+        super(Text.of("Position Select"), parent, config.getX(), config.getY(), PotionCounter.getManager(), (x, y) -> {
             config.setX(x);
             config.setY(y);
         });
