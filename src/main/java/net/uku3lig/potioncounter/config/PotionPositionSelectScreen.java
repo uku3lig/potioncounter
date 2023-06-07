@@ -1,7 +1,7 @@
 package net.uku3lig.potioncounter.config;
 
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.potion.PotionUtil;
@@ -22,13 +22,13 @@ public class PotionPositionSelectScreen extends PositionSelectScreen {
     }
 
     @Override
-    protected void draw(MatrixStack matrices, int mouseX, int mouseY, float delta, int x, int y) {
+    protected void draw(DrawContext context, int mouseX, int mouseY, float delta, int x, int y) {
         List<ItemStack> potions = Arrays.asList(
                 PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, 32), Potions.STRONG_HEALING),
                 PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION, 7), Potions.LONG_STRENGTH),
                 PotionUtil.setPotion(new ItemStack(Items.SPLASH_POTION), Potions.SWIFTNESS)
         );
 
-        PotionCounter.renderPotions(matrices, potions, x, y, width, height, itemRenderer, textRenderer);
+        PotionCounter.renderPotions(context, potions, x, y, width, height, textRenderer);
     }
 }

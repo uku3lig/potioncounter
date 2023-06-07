@@ -14,15 +14,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PotionCounterConfig implements IConfig<PotionCounterConfig> {
-    private boolean enabled;
-    private boolean showUpgrades;
-    private int x;
-    private int y;
-    private boolean morePotions;
-    private List<String> disabledPotions;
+    private boolean enabled = true;
+    private boolean showUpgrades = false;
+    private int x = -1;
+    private int y = -1;
+    private boolean morePotions = false;
+    private List<String> disabledPotions = new ArrayList<>();
 
     @Override
     public PotionCounterConfig defaultConfig() {
-        return new PotionCounterConfig(true, false, -1, -1, false, new ArrayList<>());
+        return new PotionCounterConfig();
     }
 }

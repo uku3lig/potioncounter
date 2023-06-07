@@ -2,8 +2,7 @@ package net.uku3lig.potioncounter;
 
 import lombok.Getter;
 import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,7 +27,7 @@ public class PotionCounter {
     public static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
 
     public static List<ItemStack> getPotions(PlayerInventory inventory) {
-        Stream<ItemStack> stream = inventory.main.stream().filter(i -> i.isItemEqual(SPLASH_POT));
+        Stream<ItemStack> stream = inventory.main.stream().filter(i -> i.isOf(SPLASH_POT.getItem()));
         if (manager.getConfig().isShowUpgrades()) {
             return stream.collect(Collectors.groupingBy(PotionUtil::getPotion, Collectors.counting()))
                     .entrySet().stream()
@@ -58,7 +57,7 @@ public class PotionCounter {
         return first.getTranslationKey().equalsIgnoreCase(other.getTranslationKey()) && first.getColor() == other.getColor();
     }
 
-    public static void renderPotions(MatrixStack matrices, List<ItemStack> items, int x, int y, int scaledWidth, int scaledHeight, ItemRenderer itemRenderer, TextRenderer textRenderer) {
+    public static void renderPotions(DrawContext context, List<ItemStack> items, int x, int y, int scaledWidth, int scaledHeight, TextRenderer textRenderer) {
         if (x == -1 || y == -1) {
             x = 5;
             y = 5;
@@ -79,19 +78,19 @@ public class PotionCounter {
             if (baseName != null && manager.getConfig().isShowUpgrades()) {
                 if (baseName.contains("long")) {
                     textOffset += 16;
-                    itemRenderer.renderGuiItemIcon(matrices, new ItemStack(Items.REDSTONE), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
+                    context.drawItem(new ItemStack(Items.REDSTONE), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
                 }
                 if (baseName.contains("strong")) {
                     textOffset += 16;
-                    itemRenderer.renderGuiItemIcon(matrices, new ItemStack(Items.GLOWSTONE_DUST), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
+                    context.drawItem(new ItemStack(Items.GLOWSTONE_DUST), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
                 }
             }
 
             String text = String.valueOf(item.getCount());
             int textWidth = textRenderer.getWidth(text);
 
-            itemRenderer.renderGuiItemIcon(matrices, item, isBottom ? x - 16 : x, isRight ? ly - 16 : ly);
-            textRenderer.draw(matrices, text, isBottom ? x - 18 - textWidth - textOffset : x + 18 + textOffset, (isRight ? ly - 16 : ly) + textRenderer.fontHeight / 2f, Color.WHITE.getRGB());
+            context.drawItem(item, isBottom ? x - 16 : x, isRight ? ly - 16 : ly);
+            context.drawText(textRenderer, text, isBottom ? x - 18 - textWidth - textOffset : x + 18 + textOffset, (isRight ? ly - 16 : ly) + textRenderer.fontHeight / 2, Color.WHITE.getRGB(), true);
         }
     }
 
