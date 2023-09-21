@@ -1,45 +1,40 @@
 package net.uku3lig.potioncounter.config;
 
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
 import net.uku3lig.ukulib.config.ConfigManager;
+import net.uku3lig.ukulib.config.option.CyclingOption;
+import net.uku3lig.ukulib.config.option.WidgetCreator;
 import net.uku3lig.ukulib.config.screen.AbstractConfigScreen;
-
-import java.util.Objects;
 
 public class PotionSelectionScreen extends AbstractConfigScreen<PotionCounterConfig> {
     public PotionSelectionScreen(Screen parent, ConfigManager<PotionCounterConfig> manager) {
-        super(parent, Text.translatable("potioncounter.togglePotions"), manager);
+        super("potioncounter.togglePotions", parent, manager);
     }
 
     @Override
-    protected SimpleOption<?>[] getOptions(PotionCounterConfig config) {
+    protected WidgetCreator[] getWidgets(PotionCounterConfig config) {
         if (config.isMorePotions()) {
             return Registries.STATUS_EFFECT.stream()
                     .map(StatusEffect::getTranslationKey)
-                    .map(key -> SimpleOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
+                    .map(key -> CyclingOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
                         if (value) config.getDisabledPotions().remove(key);
                         else config.getDisabledPotions().add(key);
                     }))
-                    .toArray(SimpleOption[]::new);
+                    .toArray(CyclingOption[]::new);
         } else {
             return Registries.POTION.stream()
                     .flatMap(p -> p.getEffects().stream())
                     .map(StatusEffectInstance::getEffectType)
-                    .map(StatusEffect::getRawId)
-                    .distinct()
-                    .map(StatusEffect::byRawId)
-                    .filter(Objects::nonNull)
                     .map(StatusEffect::getTranslationKey)
-                    .map(key -> SimpleOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
+                    .distinct()
+                    .map(key -> CyclingOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
                         if (value) config.getDisabledPotions().remove(key);
                         else config.getDisabledPotions().add(key);
                     }))
-                    .toArray(SimpleOption[]::new);
+                    .toArray(CyclingOption[]::new);
         }
     }
 }

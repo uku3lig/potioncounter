@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 
 public class PotionCounter {
     @Getter
-    private static final ConfigManager<PotionCounterConfig> manager = ConfigManager.create(PotionCounterConfig.class, "potioncounter");
+    private static final ConfigManager<PotionCounterConfig> manager = ConfigManager.createDefault(PotionCounterConfig.class, "potioncounter");
     public static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
 
     public static List<ItemStack> getPotions(PlayerInventory inventory) {
