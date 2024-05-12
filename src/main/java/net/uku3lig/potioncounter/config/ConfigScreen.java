@@ -19,7 +19,6 @@ public class ConfigScreen extends AbstractConfigScreen<PotionCounterConfig> {
                 CyclingOption.ofBoolean("potioncounter.enabled", config.isEnabled(), config::setEnabled),
                 CyclingOption.ofBoolean("potioncounter.showUpgrades", config.isShowUpgrades(), config::setShowUpgrades),
                 new ScreenOpenButton("ukulib.position", parent -> new PotionPositionSelectScreen(parent, config)),
-                CyclingOption.ofBoolean("potioncounter.morePotions", config.isMorePotions(), config::setMorePotions),
                 new ScreenOpenButton("potioncounter.togglePotions", parent -> new PotionSelectionScreen(parent, manager))
         };
     }

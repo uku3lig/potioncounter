@@ -19,17 +19,15 @@ import java.util.List;
 @Mixin(value = InGameHud.class, priority = 999)
 public class MixinInGameHud {
     @Shadow @Final private MinecraftClient client;
-    @Shadow private int scaledHeight;
-    @Shadow private int scaledWidth;
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"))
-    private void afterRenderOverlay(DrawContext context, CallbackInfo ci) {
+    private void afterRenderOverlay(DrawContext context, float tickDelta, CallbackInfo ci) {
         if (!PotionCounter.getManager().getConfig().isEnabled()) return;
         if (client.player == null) return;
         PotionCounterConfig config = PotionCounter.getManager().getConfig();
         TextRenderer textRenderer = client.textRenderer;
         List<ItemStack> items = PotionCounter.getPotions(client.player.getInventory());
 
-        PotionCounter.renderPotions(context, items, config.getX(), config.getY(), scaledWidth, scaledHeight, textRenderer);
+        PotionCounter.renderPotions(context, items, config.getX(), config.getY(), context.getScaledWindowWidth(), context.getScaledWindowHeight(), textRenderer);
     }
 }

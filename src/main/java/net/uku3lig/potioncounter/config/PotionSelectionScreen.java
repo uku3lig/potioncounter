@@ -4,6 +4,7 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.uku3lig.ukulib.config.ConfigManager;
 import net.uku3lig.ukulib.config.option.CyclingOption;
 import net.uku3lig.ukulib.config.option.WidgetCreator;
@@ -16,25 +17,16 @@ public class PotionSelectionScreen extends AbstractConfigScreen<PotionCounterCon
 
     @Override
     protected WidgetCreator[] getWidgets(PotionCounterConfig config) {
-        if (config.isMorePotions()) {
-            return Registries.STATUS_EFFECT.stream()
-                    .map(StatusEffect::getTranslationKey)
-                    .map(key -> CyclingOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
-                        if (value) config.getDisabledPotions().remove(key);
-                        else config.getDisabledPotions().add(key);
-                    }))
-                    .toArray(CyclingOption[]::new);
-        } else {
-            return Registries.POTION.stream()
-                    .flatMap(p -> p.getEffects().stream())
-                    .map(StatusEffectInstance::getEffectType)
-                    .map(StatusEffect::getTranslationKey)
-                    .distinct()
-                    .map(key -> CyclingOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
-                        if (value) config.getDisabledPotions().remove(key);
-                        else config.getDisabledPotions().add(key);
-                    }))
-                    .toArray(CyclingOption[]::new);
-        }
+        return Registries.POTION.stream()
+                .flatMap(p -> p.getEffects().stream())
+                .map(StatusEffectInstance::getEffectType)
+                .map(RegistryEntry::value)
+                .map(StatusEffect::getTranslationKey)
+                .distinct()
+                .map(key -> CyclingOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
+                    if (value) config.getDisabledPotions().remove(key);
+                    else config.getDisabledPotions().add(key);
+                }))
+                .toArray(CyclingOption[]::new);
     }
 }
