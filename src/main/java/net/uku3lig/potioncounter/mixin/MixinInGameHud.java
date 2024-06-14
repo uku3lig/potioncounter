@@ -4,6 +4,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.hud.InGameHud;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.item.ItemStack;
 import net.uku3lig.potioncounter.PotionCounter;
 import net.uku3lig.potioncounter.config.PotionCounterConfig;
@@ -21,7 +22,7 @@ public class MixinInGameHud {
     @Shadow @Final private MinecraftClient client;
 
     @Inject(method = "renderStatusEffectOverlay", at = @At("HEAD"))
-    private void afterRenderOverlay(DrawContext context, float tickDelta, CallbackInfo ci) {
+    private void afterRenderOverlay(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if (!PotionCounter.getManager().getConfig().isEnabled()) return;
         if (client.player == null) return;
         PotionCounterConfig config = PotionCounter.getManager().getConfig();
