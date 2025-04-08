@@ -28,7 +28,7 @@ public class PotionCounter {
     public static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
 
     public static List<ItemStack> getPotions(PlayerInventory inventory) {
-        Stream<RegistryEntry<Potion>> stream = inventory.main.stream()
+        Stream<RegistryEntry<Potion>> stream = inventory.getMainStacks().stream()
                 .filter(stack -> stack.isOf(SPLASH_POT.getItem()))
                 .map(stack -> stack.get(DataComponentTypes.POTION_CONTENTS))
                 .filter(Objects::nonNull)
