@@ -79,11 +79,11 @@ public class PotionCounter {
             if (baseName != null && manager.getConfig().isShowUpgrades()) {
                 if (baseName.contains("long")) {
                     textOffset += 16;
-                    context.drawItem(new ItemStack(Items.REDSTONE), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
+                    context.drawItem(new ItemStack(Items.REDSTONE), isRight ? x - 16 - textOffset : x + textOffset, isBottom ? ly - 16 : ly);
                 }
                 if (baseName.contains("strong")) {
                     textOffset += 16;
-                    context.drawItem(new ItemStack(Items.GLOWSTONE_DUST), isBottom ? x - 16 - textOffset : x + textOffset, isRight ? ly - 16 : ly);
+                    context.drawItem(new ItemStack(Items.GLOWSTONE_DUST), isRight ? x - 16 - textOffset : x + textOffset, isBottom ? ly - 16 : ly);
                 }
             }
 
