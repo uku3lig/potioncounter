@@ -1,10 +1,10 @@
 package net.uku3lig.potioncounter.config;
 
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.uku3lig.ukulib.config.ConfigManager;
 import net.uku3lig.ukulib.config.option.CyclingOption;
 import net.uku3lig.ukulib.config.option.WidgetCreator;
@@ -17,11 +17,11 @@ public class PotionSelectionScreen extends AbstractConfigScreen<PotionCounterCon
 
     @Override
     protected WidgetCreator[] getWidgets(PotionCounterConfig config) {
-        return Registries.POTION.stream()
+        return BuiltInRegistries.POTION.stream()
                 .flatMap(p -> p.getEffects().stream())
-                .map(StatusEffectInstance::getEffectType)
-                .map(RegistryEntry::value)
-                .map(StatusEffect::getTranslationKey)
+                .map(MobEffectInstance::getEffect)
+                .map(Holder::value)
+                .map(MobEffect::getDescriptionId)
                 .distinct()
                 .map(key -> CyclingOption.ofBoolean(key, !config.getDisabledPotions().contains(key), value -> {
                     if (value) config.getDisabledPotions().remove(key);

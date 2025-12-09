@@ -1,6 +1,6 @@
 package net.uku3lig.potioncounter;
 
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.Screen;
 import net.uku3lig.potioncounter.config.ConfigScreen;
 import net.uku3lig.ukulib.api.UkulibAPI;
 
