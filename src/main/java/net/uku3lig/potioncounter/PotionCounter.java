@@ -3,12 +3,13 @@ package net.uku3lig.potioncounter;
 import com.google.common.collect.Iterables;
 import lombok.Getter;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -25,11 +26,13 @@ import java.util.stream.Stream;
 public class PotionCounter {
     @Getter
     private static final ConfigManager<PotionCounterConfig> manager = ConfigManager.createDefault(PotionCounterConfig.class, "potioncounter");
-    public static final ItemStack SPLASH_POT = new ItemStack(Items.SPLASH_POTION);
+    public static final ItemStackTemplate SPLASH_POT = new ItemStackTemplate(Items.SPLASH_POTION);
+    public static final ItemStackTemplate GLOWSTONE = new ItemStackTemplate(Items.GLOWSTONE_DUST);
+    public static final ItemStackTemplate REDSTONE = new ItemStackTemplate(Items.REDSTONE);
 
     public static List<ItemStack> getPotions(Inventory inventory) {
         Stream<Holder<@NotNull Potion>> stream = inventory.getNonEquipmentItems().stream()
-                .filter(stack -> stack.is(SPLASH_POT.getItem()))
+                .filter(stack -> stack.is(SPLASH_POT.item()))
                 .map(stack -> stack.get(DataComponents.POTION_CONTENTS))
                 .filter(Objects::nonNull)
                 .filter(comp -> comp.potion().isPresent())
@@ -57,7 +60,7 @@ public class PotionCounter {
         }
     }
 
-    public static void renderPotions(GuiGraphics graphics, List<ItemStack> items, int x, int y, int scaledWidth, int scaledHeight, Font textRenderer) {
+    public static void extractPotions(GuiGraphicsExtractor graphics, List<ItemStack> items, int x, int y, int scaledWidth, int scaledHeight, Font textRenderer) {
         if (x == -1 || y == -1) {
             x = 5;
             y = 5;
@@ -79,19 +82,19 @@ public class PotionCounter {
             if (baseName != null && manager.getConfig().isShowUpgrades()) {
                 if (baseName.contains("long")) {
                     textOffset += 16;
-                    graphics.renderItem(new ItemStack(Items.REDSTONE), isRight ? x - 16 - textOffset : x + textOffset, isBottom ? ly - 16 : ly);
+                    graphics.item(REDSTONE.create(), isRight ? x - 16 - textOffset : x + textOffset, isBottom ? ly - 16 : ly);
                 }
                 if (baseName.contains("strong")) {
                     textOffset += 16;
-                    graphics.renderItem(new ItemStack(Items.GLOWSTONE_DUST), isRight ? x - 16 - textOffset : x + textOffset, isBottom ? ly - 16 : ly);
+                    graphics.item(GLOWSTONE.create(), isRight ? x - 16 - textOffset : x + textOffset, isBottom ? ly - 16 : ly);
                 }
             }
 
             String text = String.valueOf(item.getCount());
             int textWidth = textRenderer.width(text);
 
-            graphics.renderItem(item, isRight ? x - 16 : x, isBottom ? ly - 16 : ly);
-            graphics.drawString(textRenderer, text, isRight ? x - 18 - textWidth - textOffset : x + 18 + textOffset, (isBottom ? ly - 16 : ly) + textRenderer.lineHeight / 2, 0xFFFFFFFF, true);
+            graphics.item(item, isRight ? x - 16 : x, isBottom ? ly - 16 : ly);
+            graphics.text(textRenderer, text, isRight ? x - 18 - textWidth - textOffset : x + 18 + textOffset, (isBottom ? ly - 16 : ly) + textRenderer.lineHeight / 2, 0xFFFFFFFF, true);
         }
     }
 

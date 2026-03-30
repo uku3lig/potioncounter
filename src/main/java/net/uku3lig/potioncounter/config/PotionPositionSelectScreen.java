@@ -1,6 +1,6 @@
 package net.uku3lig.potioncounter.config;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -26,7 +26,7 @@ public class PotionPositionSelectScreen extends PositionSelectScreen {
     }
 
     @Override
-    protected void draw(GuiGraphics graphics, int mouseX, int mouseY, float delta, int x, int y) {
-        PotionCounter.renderPotions(graphics, POTIONS, x, y, width, height, font);
+    protected void draw(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta, int x, int y) {
+        PotionCounter.extractPotions(graphics, POTIONS, x, y, width, height, font);
     }
 }

@@ -1,6 +1,6 @@
 plugins {
-    id("net.fabricmc.fabric-loom-remap") version "1.14-SNAPSHOT"
-    id("io.freefair.lombok") version "9.1.0"
+    id("net.fabricmc.fabric-loom") version "1.15-SNAPSHOT"
+    id("io.freefair.lombok") version "9.2.0"
 }
 
 version = "${project.property("mod_version")}+mc${project.property("minecraft_version")}"
@@ -15,10 +15,9 @@ repositories {
 dependencies {
     // To change the versions see the gradle.properties file
     minecraft("com.mojang:minecraft:${project.property("minecraft_version")}")
-    mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
+    implementation("net.fabricmc:fabric-loader:${project.property("loader_version")}")
 
-    modApi("net.uku3lig:ukulib:${project.property("ukulib_version")}")
+    api("net.uku3lig:ukulib-fabric:${project.property("ukulib_version")}")
 }
 
 base {
@@ -26,8 +25,8 @@ base {
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
 
 tasks.processResources {
