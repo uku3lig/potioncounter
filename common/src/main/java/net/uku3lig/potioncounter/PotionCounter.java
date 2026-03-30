@@ -2,6 +2,7 @@ package net.uku3lig.potioncounter;
 
 import com.google.common.collect.Iterables;
 import lombok.Getter;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
@@ -58,6 +59,16 @@ public class PotionCounter {
                     })
                     .toList();
         }
+    }
+
+    public static void extractCurrentPlayerPotions(GuiGraphicsExtractor graphics) {
+        Minecraft minecraft = Minecraft.getInstance();
+        PotionCounterConfig config = manager.getConfig();
+        if (!config.isEnabled()) return;
+        if (minecraft.player == null) return;
+
+        List<ItemStack> items = PotionCounter.getPotions(minecraft.player.getInventory());
+        PotionCounter.extractPotions(graphics, items, config.getX(), config.getY(), graphics.guiWidth(), graphics.guiHeight(), minecraft.font);
     }
 
     public static void extractPotions(GuiGraphicsExtractor graphics, List<ItemStack> items, int x, int y, int scaledWidth, int scaledHeight, Font textRenderer) {

@@ -1,0 +1,26 @@
+plugins {
+    id("multiloader-platform")
+    id("net.fabricmc.fabric-loom")
+}
+
+loom {
+    runs.named("client") {
+        client()
+
+        configName = "fabric - Client"
+        runDir = "../run"
+        appendProjectPathToConfigName = false
+        ideConfigGenerated(true)
+    }
+}
+
+dependencies {
+    minecraft("com.mojang:minecraft:${BuildConfig.MINECRAFT_VERSION}")
+    implementation("net.fabricmc:fabric-loader:${BuildConfig.FABRIC_LOADER_VERSION}")
+
+    api("net.uku3lig:ukulib-fabric:${BuildConfig.UKULIB_VERSION}")
+}
+
+modrinth {
+    loaders.add("quilt")
+}

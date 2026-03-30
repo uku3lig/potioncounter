@@ -1,0 +1,33 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+license = "MIT"
+
+[[mods]]
+modId = "potioncounter"
+displayName = "PotionCounter"
+version = "${version}"
+
+logoFile = "assets/potioncounter/icon.png"
+authors = "uku"
+description = "shows how many potions you have left in your inventory"
+
+[[dependencies.potioncounter]]
+modId = "minecraft"
+type = "required"
+versionRange = "[26.1,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.potioncounter]]
+modId = "neoforge"
+type = "required"
+versionRange = "[26.1.0.0,)"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.potioncounter]]
+modId = "ukulib"
+type = "required"
+versionRange = "[2.0.0,)"
+ordering = "NONE"
+side = "CLIENT"
