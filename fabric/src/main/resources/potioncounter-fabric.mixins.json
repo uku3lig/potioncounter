@@ -4,7 +4,7 @@
   "package": "net.uku3lig.potioncounter.fabric.mixin",
   "compatibilityLevel": "JAVA_25",
   "client": [
-    "MixinGui"
+    "MixinHud"
   ],
   "injectors": {
     "defaultRequire": 1
