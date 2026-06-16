@@ -14,20 +14,20 @@ description = "shows how many potions you have left in your inventory"
 [[dependencies.potioncounter]]
 modId = "minecraft"
 type = "required"
-versionRange = "[26.1,)"
+versionRange = "[26.2,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.potioncounter]]
 modId = "neoforge"
 type = "required"
-versionRange = "[26.1.0.0,)"
+versionRange = "[26.2.0.0-beta,)"
 ordering = "NONE"
 side = "CLIENT"
 
 [[dependencies.potioncounter]]
 modId = "ukulib"
 type = "required"
-versionRange = "[2.0.0,)"
+versionRange = "[2.1.0,3)"
 ordering = "NONE"
 side = "CLIENT"
